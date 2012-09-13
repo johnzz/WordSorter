@@ -23,4 +23,7 @@ Writing results to out.txt... 62ms
 
 Using 16 threads, 267751 words was sorted in 249 milliseconds. 
 
-What the Fuck!
+What the Fuck! 
+
+on 32bit,the Array.Sort will work faster! Why? 
+on TOSHIBA Disk 7200 ,the NIO MAP work not very good 
