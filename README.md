@@ -7,10 +7,17 @@ The Java code in this project was originally an assignment from the university. 
 Go project can be run by entering the Go directory and issuing the following: `go run main.go 128 sowpods.txt out.txt`
 128 is the number of goroutines, sowpods.txt is the input and out.txt is the output.
 
-Java project can be run by entering Java directory and compile using `javac Sort.java` then run by issuing `java Sort 128 sowpods.txt out.txt`
+Java project can be run by entering Java directory and compile using `javac Sort.java` then run by issuing `java Sort 16 sowpods.txt out.txt`
 
 ## Results
 
-On my Macbook Air 13" mid-2012 the results where the following:
-Go: 732ms
-Java: 952ms
+On my ThinkPad T430 I7 2.9 With 830SSD
+C:\Work\Test\WordSorter\Java>java -Xmx1024m -Xms1024m -Xmn512m -Xss512k -XX:+UseParallelGC Sort 16 sowpods.txt out.txt
+Loading contents of sowpods.txt... 46ms
+Sorting... 141ms
+Writing results to out.txt... 62ms
+
+Using 16 threads, 267751 words was sorted in 249 milliseconds. 
+
+What the Fuck!
+Java: 259ms
