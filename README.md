@@ -12,12 +12,15 @@ Java project can be run by entering Java directory and compile using `javac Sort
 ## Results
 
 On my ThinkPad T430 I7 2.9 With 830SSD
+
 C:\Work\Test\WordSorter\Java>java -Xmx1024m -Xms1024m -Xmn512m -Xss512k -XX:+UseParallelGC Sort 16 sowpods.txt out.txt
+
 Loading contents of sowpods.txt... 46ms
+
 Sorting... 141ms
+
 Writing results to out.txt... 62ms
 
 Using 16 threads, 267751 words was sorted in 249 milliseconds. 
 
 What the Fuck!
-Java: 259ms
