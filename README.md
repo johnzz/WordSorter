@@ -11,7 +11,7 @@ Java project can be run by entering Java directory and compile using `javac Sort
 
 ## Results
 
-On my ThinkPad T430 I7 2.9 With 830SSD
+On my ThinkPad T430 I7 2.9G on Win7X64 16GRAM With 830SSD
 
 C:\Work\Test\WordSorter\Java>java -Xmx1024m -Xms1024m -Xmn512m -Xss512k -XX:+UseParallelGC Sort 16 sowpods.txt out.txt
 
