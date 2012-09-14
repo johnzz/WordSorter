@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.concurrent.ForkJoinPool;
 
 final public class Sort {
 
@@ -163,21 +164,23 @@ final public class Sort {
 		try {
 			int bufferSize = 400 * 1024;
 			File file = new File(outputFile);
-			if (!file.exists()) {
-				file.createNewFile();
-			} else {
-				file.delete();
-				file.createNewFile();
-			}
+//			if (!file.exists()) {
+//				file.createNewFile();
+//			} else {
+//				file.delete();
+//				file.createNewFile();
+//			}
 			RandomAccessFile out = new RandomAccessFile(outputFile, "rw");// 指定目标文件
 			FileChannel channel = out.getChannel(); // 从文件中获取一个通道
 			ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize + 200);
 			StringBuffer buf = new StringBuffer();
 			int index = 0;
+			char rt = '\n';
 			for (int i = 0; i < words.length; i++) {
 				// String outputWord = (i == words.length - 1) ? words[i]
 				// : words[i] + "\n";
 				buf.append(words[i]);
+				buf.append(rt);
 				if (buf.length() >= bufferSize) {
 					buffer = channel.map(FileChannel.MapMode.READ_WRITE, index,
 							buf.length());
@@ -223,6 +226,8 @@ final public class Sort {
 		LinkedList<WordHandler> wordHandlers = new LinkedList<WordHandler>();
 
 		initSortThreads(threadCount, wordHandlers); // Start sortering
+		
+		
 		boolean sortResult = interleaveThreads(wordHandlers); // Flett sammen
 																// resultat
 
@@ -248,21 +253,22 @@ final public class Sort {
 				additionalWordsPerThread--;
 			}
 
-			WordSorter sorter = new WordSorter(words, currentOffset,
+			ForkWordSorter sorter = new ForkWordSorter(words, currentOffset,
 					currentOffset + wordsForThread);
+			
 			wordHandlers.add(sorter);
+			fjpool.submit(sorter);
 
 			currentOffset += wordsForThread;
 		}
 	}
-
+	private ForkJoinPool fjpool = new ForkJoinPool();
 	private boolean interleaveThreads(LinkedList<WordHandler> wordHandlers) {
 		WordHandler buffer = null;
-
+		fjpool.shutdown();//不在接受新任务
 		while (wordHandlers.size() > 0) {
 			try {
-				wordHandlers.peek().join();
-
+				 wordHandlers.peek().joinWork();
 				if (buffer == null && wordHandlers.size() == 1) {
 					words = wordHandlers.poll().getWords();
 				} else if (buffer == null) {

@@ -36,4 +36,10 @@ public class Interleaver extends Thread implements WordHandler {
     public String[] getWords() {
         return sorted;
     }
+
+
+	@Override
+	public void joinWork() throws InterruptedException {
+		this.join();
+	}
 }
