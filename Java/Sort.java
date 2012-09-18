@@ -11,8 +11,8 @@ import java.util.concurrent.ForkJoinPool;
 final public class Sort {
 
 	private static Sort instance = null;
-	private int numberOfWords = 0;
-	private String[] words;
+	private static int numberOfWords = 0;
+	private String[] words = null;
 
 	// Map<String, Integer> tree = new TreeMap<String, Integer>();
 
@@ -27,10 +27,19 @@ final public class Sort {
 			// args[1] = "test.txt";
 			args[2] = "out.txt";
 		}
+		
+		Sort sort = Sort.getInstance();
+		Date start = new Date(); // For å beregne tidsforbruk
+
+		if (!sort.getWordsFromInput(args[1])) { // Les inn fra fil
+			System.out
+					.println("Could not retrieve words from " + args[1] + "!");
+			return;
+		}
 
 		int threadCount;
 		try {
-			threadCount = Integer.parseInt(args[0]);
+			threadCount = numberOfWords /Integer.parseInt(args[0]);
 
 			if (threadCount < 1) {
 				System.out
@@ -43,17 +52,16 @@ final public class Sort {
 			return;
 		}
 
-		Sort sort = Sort.getInstance();
-		Date start = new Date(); // For å beregne tidsforbruk
+		
 
-		if (!sort.getWordsFromInput(args[1])) { // Les inn fra fil
-			System.out
-					.println("Could not retrieve words from " + args[1] + "!");
-			return;
-		}
-
-		if (!sort.sortWords(threadCount)) { // Sorter med threadCount antall
-											// tråder
+		// if (!sort.sortWords(threadCount)) { // Sorter med threadCount antall
+		// // tråder
+		// System.out.println("Something went wrong when sorting the words!");
+		// return;
+		// }
+		if (!sort.sortWordsOnFork(threadCount)) { // Sorter med threadCount
+													// antall
+			// tråder
 			System.out.println("Something went wrong when sorting the words!");
 			return;
 		}
@@ -82,6 +90,19 @@ final public class Sort {
 
 		return instance;
 	} // Returner singleton objekt
+
+	public boolean sortWordsOnFork(int threadCount) {
+		System.out.print("Sorting... ");
+		Date start = new Date();
+		ForkWordSorter fws = new ForkWordSorter(words, 0, words.length,
+				threadCount);
+		fjpool.invoke(fws);
+		this.words = fws.getWords();
+		Date end = new Date();
+		long timeDiff = end.getTime() - start.getTime();
+		System.out.println(timeDiff + "ms");
+		return true;
+	}
 
 	public boolean getWordsFromInput(String inputFile) {
 		System.out.print("Loading contents of " + inputFile + "... ");
@@ -164,12 +185,12 @@ final public class Sort {
 		try {
 			int bufferSize = 400 * 1024;
 			File file = new File(outputFile);
-//			if (!file.exists()) {
-//				file.createNewFile();
-//			} else {
-//				file.delete();
-//				file.createNewFile();
-//			}
+			// if (!file.exists()) {
+			// file.createNewFile();
+			// } else {
+			// file.delete();
+			// file.createNewFile();
+			// }
 			RandomAccessFile out = new RandomAccessFile(outputFile, "rw");// 指定目标文件
 			FileChannel channel = out.getChannel(); // 从文件中获取一个通道
 			ByteBuffer buffer = ByteBuffer.allocateDirect(bufferSize + 200);
@@ -226,8 +247,7 @@ final public class Sort {
 		LinkedList<WordHandler> wordHandlers = new LinkedList<WordHandler>();
 
 		initSortThreads(threadCount, wordHandlers); // Start sortering
-		
-		
+
 		boolean sortResult = interleaveThreads(wordHandlers); // Flett sammen
 																// resultat
 
@@ -254,21 +274,22 @@ final public class Sort {
 			}
 
 			ForkWordSorter sorter = new ForkWordSorter(words, currentOffset,
-					currentOffset + wordsForThread);
-			
-			wordHandlers.add(sorter);
+					currentOffset + wordsForThread, threadCount);
+
+			// wordHandlers.add(sorter);
 			fjpool.submit(sorter);
 
 			currentOffset += wordsForThread;
 		}
 	}
+
 	private ForkJoinPool fjpool = new ForkJoinPool();
+
 	private boolean interleaveThreads(LinkedList<WordHandler> wordHandlers) {
 		WordHandler buffer = null;
-		fjpool.shutdown();//不在接受新任务
 		while (wordHandlers.size() > 0) {
 			try {
-				 wordHandlers.peek().joinWork();
+				wordHandlers.peek().joinWork();
 				if (buffer == null && wordHandlers.size() == 1) {
 					words = wordHandlers.poll().getWords();
 				} else if (buffer == null) {
