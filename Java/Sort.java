@@ -22,7 +22,7 @@ final public class Sort {
 			// System.out.println("Wrong number of arguments!");
 			// return;
 			args = new String[3];
-			args[0] = "16";
+			args[0] = "32";
 			args[1] = "sowpods.txt";
 			// args[1] = "test.txt";
 			args[2] = "out.txt";
@@ -183,7 +183,7 @@ final public class Sort {
 		}
 
 		try {
-			int bufferSize = 400 * 1024;
+			int bufferSize = 3200 * 1024;
 			File file = new File(outputFile);
 			// if (!file.exists()) {
 			// file.createNewFile();
