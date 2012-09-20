@@ -13,6 +13,7 @@ final public class Sort {
 	private static Sort instance = null;
 	private static int numberOfWords = 0;
 	private String[] words = null;
+	private ForkJoinPool fjpool = new ForkJoinPool();
 
 	// Map<String, Integer> tree = new TreeMap<String, Integer>();
 
@@ -22,12 +23,12 @@ final public class Sort {
 			// System.out.println("Wrong number of arguments!");
 			// return;
 			args = new String[3];
-			args[0] = "32";
+			args[0] = "512";
 			args[1] = "sowpods.txt";
 			// args[1] = "test.txt";
 			args[2] = "out.txt";
 		}
-		
+
 		Sort sort = Sort.getInstance();
 		Date start = new Date(); // For å beregne tidsforbruk
 
@@ -37,11 +38,11 @@ final public class Sort {
 			return;
 		}
 
-		int threadCount;
+		int threadPerCount;
 		try {
-			threadCount = numberOfWords /Integer.parseInt(args[0]);
+			threadPerCount = numberOfWords / Integer.parseInt(args[0]);
 
-			if (threadCount < 1) {
+			if (threadPerCount < 1) {
 				System.out
 						.println("You must specify minimum 1 thread for sorting!");
 				return;
@@ -52,15 +53,13 @@ final public class Sort {
 			return;
 		}
 
-		
-
 		// if (!sort.sortWords(threadCount)) { // Sorter med threadCount antall
 		// // tråder
 		// System.out.println("Something went wrong when sorting the words!");
 		// return;
 		// }
-		if (!sort.sortWordsOnFork(threadCount)) { // Sorter med threadCount
-													// antall
+		if (!sort.sortWordsOnFork(threadPerCount)) { // Sorter med threadCount
+														// antall
 			// tråder
 			System.out.println("Something went wrong when sorting the words!");
 			return;
@@ -75,7 +74,7 @@ final public class Sort {
 		long timeToComplete = end.getTime() - start.getTime();
 
 		System.out.println();
-		System.out.println("Using " + threadCount + " threads, "
+		System.out.println("Using " + threadPerCount + " threads, "
 				+ sort.getWords().length + " words was sorted in "
 				+ timeToComplete + " milliseconds.");
 	}
@@ -183,7 +182,7 @@ final public class Sort {
 		}
 
 		try {
-			int bufferSize = 3200 * 1024;
+			int bufferSize = 200 * 1024;
 			File file = new File(outputFile);
 			// if (!file.exists()) {
 			// file.createNewFile();
@@ -282,8 +281,6 @@ final public class Sort {
 			currentOffset += wordsForThread;
 		}
 	}
-
-	private ForkJoinPool fjpool = new ForkJoinPool();
 
 	private boolean interleaveThreads(LinkedList<WordHandler> wordHandlers) {
 		WordHandler buffer = null;

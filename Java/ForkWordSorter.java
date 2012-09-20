@@ -17,6 +17,7 @@ public class ForkWordSorter extends RecursiveAction {
 		this.start = start;
 		this.end = end;
 		this.threadPerCount = threadPerCount;
+		sorted = new String[end - start];
 	}
 
 	@Override
@@ -38,11 +39,10 @@ public class ForkWordSorter extends RecursiveAction {
 			for (int i = start; i < end; i++) {
 				list.add(sourceStrings[i]);
 			}
-			sorted = new String[list.size()];
+			// sorted = new String[list.size()];
 			list.toArray(sorted);
 			// Arrays.sort(sourceStrings, start, end);
-			// System.arraycopy(sourceStrings, start, sorted, start, end -
-			// start);
+			// System.arraycopy(sourceStrings, start, sorted, 0, end - start);
 			// String tem = null;
 			// for(int i =start;i<end;i++){
 			// for(int j = start;j<end;j++){
@@ -79,12 +79,12 @@ public class ForkWordSorter extends RecursiveAction {
 		int PostB = 0;// [][]
 		sorted = new String[end - start];
 		for (int i = 0; i < (end - start); i++) {
-			if(PostA==a.length&&PostB<b.length){
-				//A已经录完
+			if (PostA == a.length && PostB < b.length) {
+				// A已经录完
 				sorted[i] = b[PostB];
 				PostB++;
 				continue;
-			}else if(PostB==b.length&&PostA<a.length){
+			} else if (PostB == b.length && PostA < a.length) {
 				sorted[i] = a[PostA];
 				PostA++;
 				continue;
