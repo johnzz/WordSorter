@@ -25,5 +25,7 @@ Using 16 threads, 267751 words was sorted in 249 milliseconds.
 
 What the Fuck! 
 
-on 32bit,the Array.Sort will work faster! Why? 
-on TOSHIBA Disk 7200 ,the NIO MAP work not very good 
+#C
+The FastSort in c is 22ms £¬and Yewang take this Cpp in 34ms!
+
+Thanks for YeWang and YanRan
