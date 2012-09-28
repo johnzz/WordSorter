@@ -23,7 +23,9 @@ Writing results to out.txt... 62ms
 
 Using 16 threads, 267751 words was sorted in 249 milliseconds. 
 
-What the Fuck! 
+Tianchi update the Java code, and the speed in 77ms.
+
+So Tianchi writed a c solution, update the speed in 47ms. But not the fastest!
 
 #C
 The FastSort in c is 22ms, and Yewang take this Cpp in 34ms!
