@@ -26,6 +26,6 @@ Using 16 threads, 267751 words was sorted in 249 milliseconds.
 What the Fuck! 
 
 #C
-The FastSort in c is 22ms £¬and Yewang take this Cpp in 34ms!
+The FastSort in c is 22ms, and Yewang take this Cpp in 34ms!
 
-Thanks for YeWang and YanRan
+Thanks for YeWang and YanRan. All code run on XEON E5620 2.4G with 16 Thread, IO speed more than 500m/s 
